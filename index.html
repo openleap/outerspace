@@ -1,0 +1,201 @@
+<!--
+	
+    webgl_particles_random example by @alteredq
+    
+    Slightly modified to add leap controls by @cabbibo
+
+    modified to add awesomeness by @OwenVersteeg
+
+-->
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>ovalE</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+		<style>
+			body {
+				background-color: #000000;
+				margin: 0px;
+				overflow: hidden;
+				font-family:Monospace;
+				font-size:13px;
+				text-align:center;
+				font-weight: bold;
+				text-align:center;
+			}
+
+			a {
+				color:#0078ff;
+			}
+
+			#info {
+				color: #fff;
+				position: absolute;
+				top: 0px; width: 100%;
+				padding: 5px;
+				z-index: 100;
+			}
+		</style>
+	</head>
+	<body>
+		<!-- THREE SCRIPTS -->
+		<script src="lib/three.min.js"></script>
+		<script src="lib/Detector.js"></script>
+		<script src="lib/stats.min.js"></script>
+		<!--<script src="lib/mersenne-twister.js"></script>-->
+        
+        <!-- LEAP SCRIPT -->
+        <script src="lib/leap.js"></script>
+        
+        <!-- LEAP CONTROL -->
+        <script src="LeapControls.js"></script>
+
+		<script>
+			if (!Detector.webgl) Detector.addGetWebGLMessage();
+
+			var container, stats;
+			var camera, scene, renderer, particles, geometry, materials = [], i, h;
+			var mouseX = 0, mouseY = 0;
+			//var m = new MersenneTwister();
+			var randPhoto = 0;
+			var shifts = {};
+			
+			var clock = new THREE.Clock();
+	
+			var windowHalfX = window.innerWidth / 2;
+			var windowHalfY = window.innerHeight / 2;
+
+			init();
+			
+			function init() {
+				container = document.createElement('div');
+				document.body.appendChild(container);
+
+				camera = new THREE.PerspectiveCamera(80,window.innerWidth/window.innerHeight,1,3000)
+				camera.position.z = 1000;
+				
+				controls = new THREE.LeapControls(camera);	
+				
+				//TO CHANGE SPEED / ROTATION / ETC
+				//Alter the variables below
+				//right now they are being assigned the default values
+				//so if you don't want to change them, please delete!
+				
+				//makes rotation slower
+				controls.leapConstants.rotationConstant = 200
+		
+				//when the hand leaves the field
+				//this is the amount the rotation will be
+				//divided by ever render
+				controls.leapConstants.rotationDampening = 1.01,
+		
+				//Changes the 0 of the Y field
+				controls.leapConstants.yAlignment = 250,
+				
+				//Changes the 0 of the Z field
+				controls.leapConstants.zAlignment = -50
+				
+				//Makes movement faster
+				controls.leapConstants.movementConstant=.01
+				
+				//deceleration for when hand leaves field
+				controls.leapConstants.movementDampening=1.05			
+
+				scene = new THREE.Scene();
+				scene.fog = new THREE.FogExp2( 0x000000, 0.0007 );
+
+				geometry = new THREE.Geometry();
+
+				for (i=0; i<20; i++) {
+					var vertex = new THREE.Vector3();
+					vertex.x = Math.random() * 2000 - 1000;
+					vertex.y = Math.random() * 2000 - 1000;
+					vertex.z = Math.random() * 2000 - 1000;
+
+					geometry.vertices.push(vertex);
+				}
+
+				for (i=0; i<29; i ++) {					
+					materials[i] = new THREE.ParticleBasicMaterial({
+						color: 0xFFFFFF,
+						size: 20,
+						map: THREE.ImageUtils.loadTexture(getRandomPhotos()),
+						blending: THREE.AdditiveBlending,
+						transparent: true,
+						depthWrite: false
+					});
+					
+					particles = new THREE.ParticleSystem(geometry, materials[i]);
+					
+					particles.sortParticles = true;
+					
+					particles.rotation.x = Math.random() * 6;
+					particles.rotation.y = Math.random() * 6;
+					particles.rotation.z = Math.random() * 6;
+
+					shifts[i] = [];
+					shifts[i].x = particles.rotation.x;
+					shifts[i].y = particles.rotation.y;
+					shifts[i].z = particles.rotation.z;
+
+					scene.add(particles);
+				}
+
+				renderer = new THREE.WebGLRenderer();
+				renderer.setSize(window.innerWidth, window.innerHeight);
+				container.appendChild(renderer.domElement);
+
+				if (window.location.href.indexOf('stats')!= -1) {
+					stats = new Stats();
+					stats.domElement.style.position = 'absolute';
+					stats.domElement.style.bottom = '0px';
+					container.appendChild(stats.domElement);
+				}
+
+				window.addEventListener('resize', onWindowResize, false);
+			}
+
+			function onWindowResize() {
+				windowHalfX = window.innerWidth / 2;
+				windowHalfY = window.innerHeight / 2;
+
+				camera.aspect = window.innerWidth / window.innerHeight;
+				camera.updateProjectionMatrix();
+
+				renderer.setSize(window.innerWidth, window.innerHeight);
+			}
+
+			
+			function animate() {
+				controls.update(clock.getDelta() );
+				render();
+				if (window.location.href.indexOf('stats')!= -1) { stats.update(); }
+			}
+
+			function render() {
+				var time = Date.now() * 0.00005;
+
+				renderer.render(scene, camera);
+			}
+			
+			function getRandomPhotos() {
+				var addOne = true;
+				if (randPhoto>29) {
+					randPhoto=0;
+					addOne = false;
+				}
+
+				var result = "gphotos/"+randPhoto+".jpg";
+
+				if (addOne) {
+					randPhoto++;
+				}
+
+				return result;
+			}
+		
+			leapInit();
+		</script>
+	</body>
+</html>

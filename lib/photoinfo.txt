@@ -1,0 +1,38 @@
+gphotos = [
+'NGC 3314, NGC 3314A, NGC 3314B', 'Sombrero Galaxy, M104, NGC 4594', 'Seyfert's Sextet',
+'NGC 922, 2MASXI J0224301-244443',
+'N159',
+
+'M101, NGC 5457, The Pinwheel Galaxy',
+'NGC 4038/4039, Antennae Galaxies',
+'NGC 1300',
+'SN 1987A',
+'M81, NGC 3031, Bode's Galaxy',
+
+'M82, NGC 3034',
+'Whirlpool Galaxy, M51, NGC 5194/5',
+'Hoag's Object',
+'Markarian 509, Mrk 509',
+'NGC 4261',
+
+'I Zwicky 18, I Zw 18',
+'SN1987A',
+'NGC 4414',
+'M101, NGC 4547, The Pinwheel Galaxy',
+'NGC 1512',
+
+'Arp 148, VV 032, Mayall's Object, MCG+07-23-019',
+'NGC 4261',
+'Arp 274, NGC 5679',
+'COSMOS 3127341',
+'MS 0735.6+7421',
+
+'Arp 273, UGC 1810',
+'MACS J0025.4-1222',
+'NGC 1512',
+'M82, NGC 3034',
+'M87'
+
+'Arp 147'
+
+];
